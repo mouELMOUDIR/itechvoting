@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+   ITECH Voting
+{% endblock %}
+
+{% block content %}
+<a href="{% url 'logout' %}" style="color: red; font-weight: bold; text-decoration: none;">Logout</a>
+    {% for question in questions %}
+        <div class="question-container">
+            <h3>{{ question.question_text }}</h3>
+            <form method="post">
+                {% csrf_token %}
+                {% for option in question.option_set.all %}
+                    <div class="option {% if option.id in submitted_options %}submitted{% endif %}">
+                        <input type="radio" id="option{{ option.id }}" name="question_{{ question.id }}" value="{{ option.id }}">
+                        <label for="option{{ option.id }}">{{ option.option_text }}</label>
+                    </div>
+                {% endfor %}
+                <button type="submit">Vote</button>
+            </form>
+        </div>
+    {% endfor %}
+    
+
+    <style>
+        .question-container {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .option {
+            margin-bottom: 10px;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        .submitted {
+            background-color: green; /* Set the background color to red for submitted options */
+        }
+    </style>
+    
+{% endblock %}
